@@ -1,0 +1,1078 @@
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import AnimatedCard from "../components/AnimatedCard";
+import { useScrollAnimation } from "../hooks/useScrollAnimation";
+
+function ParticleCanvas({ isMobile }: { isMobile: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const count = isMobile ? 20 : 50;
+    const colors = ["#ffffff", "#93c5fd", "#60a5fa"];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const particles = Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 1 + 1,
+      speed: Math.random() * 0.5 + 0.3,
+      opacity: Math.random() * 0.2 + 0.2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      drift: (Math.random() - 0.5) * 0.3,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -4) {
+          p.y = canvas.height + 4;
+          p.x = Math.random() * canvas.width;
+        }
+        if (p.x < -4 || p.x > canvas.width + 4) {
+          p.x = Math.random() * canvas.width;
+        }
+      }
+      ctx.globalAlpha = 1;
+      animRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animRef.current);
+    };
+  }, [isMobile]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    />
+  );
+}
+
+/* ============================================================
+   Hero Section
+   ============================================================ */
+function HeroSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const imageBlock = (
+    <div
+      style={{
+        display: "flex",
+        alignItems: isMobile ? "flex-end" : "center",
+        justifyContent: "center",
+        position: "relative",
+        flex: isMobile ? undefined : "0 0 45%",
+        maxWidth: isMobile ? undefined : "45%",
+        width: isMobile ? "100%" : undefined,
+        alignSelf: isMobile ? "stretch" : undefined,
+      }}
+      className="hero-animate-media"
+    >
+      {/* Ambient glow */}
+      <div style={{
+        position: "absolute",
+        bottom: isMobile ? 0 : "auto",
+        top: isMobile ? "auto" : -80,
+        right: isMobile ? -20 : -80,
+        width: isMobile ? 300 : 500,
+        height: isMobile ? 300 : 500,
+        background: "radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 70%)",
+        filter: "blur(60px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+      <img
+        src="/foto-hero.png"
+        alt="Diseñador web"
+        className="hero-img-entry pt-[0px]"
+        style={{
+          width: isMobile ? 275 : "100%",
+          maxWidth: isMobile ? 275 : 480,
+          objectFit: "contain",
+          position: "relative",
+          zIndex: 1,
+          filter: "drop-shadow(0 0 40px rgba(59,130,246,0.3))",
+          display: "block",
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <section style={{
+      minHeight: "100svh",
+      background: "#0a0a0a",
+      position: "relative",
+      overflow: "hidden",
+      paddingTop: 68,
+    }}>
+      {/* Aurora section bg */}
+      <div className="aurora-section" style={{
+        position: "absolute",
+        inset: 0,
+        opacity: 0.5,
+        zIndex: 0,
+      }} />
+      {/* Canvas particles */}
+      <ParticleCanvas isMobile={isMobile} />
+      {/* Ambient glow bottom-left */}
+      <div style={{
+        position: "absolute",
+        bottom: 60,
+        left: -40,
+        width: 200,
+        height: 200,
+        background: "radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)",
+        filter: "blur(50px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: isMobile ? "32px 20px 0" : "60px 24px",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          justifyContent: isMobile ? "space-between" : "center",
+          gap: isMobile ? 16 : 48,
+          minHeight: "calc(100svh - 68px)",
+          position: "relative",
+          zIndex: 1,
+        }}
+        className="pb-[0px]">
+        {/* Left - Content */}
+        <div style={{ flex: isMobile ? "none" : "0 0 55%", maxWidth: isMobile ? "100%" : "55%", textAlign: isMobile ? "center" : "left" }}>
+          <div className="hero-animate-badge" style={{ marginBottom: 20, display: "flex", justifyContent: isMobile ? "center" : "flex-start" }}>
+            <span className="badge-blue">
+              <span style={{ width: 6, height: 6, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 8px #3b82f6", display: "inline-block" }} />
+              Diseño web premium
+            </span>
+          </div>
+
+          <h1 className="hero-animate-title" style={{
+            fontSize: isMobile ? "clamp(32px, 9vw, 42px)" : "clamp(36px, 5vw, 62px)",
+            fontWeight: 800,
+            color: "#fff",
+            lineHeight: 1.1,
+            letterSpacing: "-0.03em",
+            marginBottom: 20,
+            textShadow: "0 0 40px rgba(59,130,246,0.3), 0 0 80px rgba(59,130,246,0.15)",
+          }}>
+            Webs que <span className="gradient-text-blue">convierten</span><br />
+            visitas en <span className="gradient-text-blue">clientes</span>
+          </h1>
+
+          <p className="hero-animate-desc" style={{
+            fontSize: isMobile ? 15 : "clamp(15px, 1.5vw, 18px)",
+            color: "#a1a1aa",
+            maxWidth: isMobile ? "100%" : 480,
+            lineHeight: 1.7,
+            marginBottom: 32,
+          }}>
+            Soy diseñador web y creo páginas con diseño premium y estrategia real, para que tu negocio convierta visitas en clientes.
+          </p>
+
+          <div className="hero-animate-btn" style={{ display: "flex", justifyContent: isMobile ? "center" : "flex-start" }}>
+            <Link to="/portafolio" className="btn-primary">
+              Ver portafolio
+            </Link>
+          </div>
+        </div>
+
+        {/* Image — desktop right, mobile below text */}
+        {imageBlock}
+      </div>
+      {/* Horizontal light line between hero and next section */}
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 1,
+        background: "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.3) 30%, rgba(147,197,253,0.5) 50%, rgba(59,130,246,0.3) 70%, transparent 100%)",
+        pointerEvents: "none",
+        zIndex: 2,
+      }} />
+    </section>
+  );
+}
+
+/* ============================================================
+   Diferenciales Section
+   ============================================================ */
+function DiferencialesSection() {
+  const cards = [
+    {
+      num: "01",
+      icon: (
+        <div style={{ width: 48, height: 48, background: "rgba(59,130,246,0.12)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(59,130,246,0.2)" }}>
+          <svg width="24" height="24" fill="none" stroke="#3b82f6" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/>
+          </svg>
+        </div>
+      ),
+      title: "Diseño con estrategia avanzada",
+      text: "Antes de escribir una línea de código, analizo tu negocio, tu público y tu objetivo. Cada sección tiene un propósito claro para convertir.",
+    },
+    {
+      num: "02",
+      icon: (
+        <div style={{ width: 48, height: 48, background: "rgba(59,130,246,0.12)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(59,130,246,0.2)" }}>
+          <svg width="24" height="24" fill="none" stroke="#3b82f6" strokeWidth="2" viewBox="0 0 24 24">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+      ),
+      title: "Diseño que transmite tu marca",
+      text: "Tu web no va a parecer una plantilla. Cada detalle visual está pensado para que comunique exactamente quién sos y qué ofrecés.",
+    },
+    {
+      num: "03",
+      icon: (
+        <div style={{ width: 48, height: 48, background: "rgba(59,130,246,0.12)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(59,130,246,0.2)" }}>
+          <svg width="24" height="24" fill="none" stroke="#3b82f6" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+      ),
+      title: "Asesoramiento real",
+      text: "Te oriento con honestidad sobre qué tipo de web te conviene, qué debería incluir y cuánto sentido tiene invertir según tu negocio, tus objetivos y tu etapa actual.",
+    },
+  ];
+
+  return (
+    <section style={{ padding: "100px 24px", background: "#060608", position: "relative", overflow: "hidden" }}>
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 500,
+        height: 500,
+        background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)",
+        filter: "blur(60px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ textAlign: "center", marginBottom: 64 }}>
+          <h2 className="section-title animate-on-scroll" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>
+            Por qué Núcleo Web
+          </h2>
+          <p className="section-subtitle animate-on-scroll animate-para delay-1">
+            Tres razones que marcan la diferencia.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 24,
+        }}>
+          {cards.map((card, i) => (
+            <AnimatedCard key={i} className={`animate-on-scroll delay-${i}`} style={{ padding: "36px 28px" }}>
+              <div style={{ position: "relative" }}>
+                <span
+                  className="gradient-text-num"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    fontSize: 80,
+                    fontWeight: 900,
+                    lineHeight: 1,
+                    fontFamily: "Inter, sans-serif",
+                    userSelect: "none",
+                  }}
+                >
+                  {card.num}
+                </span>
+                <div style={{ marginBottom: 20 }}>{card.icon}</div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 12, position: "relative" }}>
+                  {card.title}
+                </h3>
+                <p style={{ fontSize: 14, color: "#a1a1aa", lineHeight: 1.75, position: "relative" }}>
+                  {card.text}
+                </p>
+              </div>
+            </AnimatedCard>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Proceso Section
+   ============================================================ */
+function ProcesoSection() {
+  const steps = [
+    {
+      num: "01",
+      icon3d: "/paso1-llamada.png",
+      title: "Llamada estratégica",
+      desc: "Agendás una llamada gratuita. Me contás tu negocio y qué buscás. Yo te digo con claridad qué se puede hacer y si tiene sentido avanzar.",
+    },
+    {
+      num: "02",
+      icon3d: "/paso2-analisis.png",
+      title: "Análisis y propuesta",
+      desc: "Analizo tu caso y armo una propuesta completa: qué se desarrolla, los tiempos y el precio. Todo claro antes de empezar.",
+    },
+    {
+      num: "03",
+      icon3d: "/paso3-formulario.png",
+      title: "Formulario y planificación",
+      desc: "Si avanzamos, te mando un formulario con preguntas clave. Con eso defino la estrategia y la estructura de cada sección.",
+    },
+    {
+      num: "04",
+      icon3d: "/paso4-desarrollo.png",
+      title: "Desarrollo",
+      desc: "Con todo definido, arranca el desarrollo. El tiempo varía según el plan, y durante el proceso tenés visibilidad de cómo avanza.",
+    },
+    {
+      num: "05",
+      icon3d: "/paso5-entrega.png",
+      title: "Entrega",
+      desc: "Revisión final y ajustes. La página queda lista, publicada y operativa.",
+    },
+  ];
+
+  const [current, setCurrent] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const sectionHeight = el.offsetHeight;
+      const viewH = window.innerHeight;
+      const scrolled = -rect.top;
+      const scrollable = sectionHeight - viewH;
+      if (scrollable <= 0) return;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+      const idx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+      setCurrent(idx);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobile, steps.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) setCurrent((p) => Math.min(p + 1, steps.length - 1));
+      else setCurrent((p) => Math.max(p - 1, 0));
+    }
+  };
+
+  if (isMobile) {
+    return (
+      <section className="aurora-section" style={{ padding: "100px 0", overflow: "hidden", position: "relative" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", marginBottom: 48 }}>
+          <div style={{ textAlign: "center" }}>
+            <h2 className="section-title" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>
+              Cómo trabajo
+            </h2>
+            <p className="section-subtitle">
+              De la primera llamada a la entrega final.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ padding: "0 24px" }}>
+          <div className="swipe-carousel" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="swipe-track" style={{ transform: `translateX(calc(-${current * 85}vw - ${current * 16}px))` }}>
+              {steps.map((step, i) => (
+                <div key={i} style={{ minWidth: "85vw", marginRight: 16 }}>
+                  <div className={i === current ? "glass-card-blue" : "glass-card"} style={{ padding: "28px 24px", position: "relative", overflow: "hidden" }}>
+                    <span style={{ position: "absolute", top: 10, right: 16, fontSize: 60, fontWeight: 900, color: "rgba(59,130,246,0.06)", lineHeight: 1, userSelect: "none" }}>{step.num}</span>
+                    <img src={step.icon3d} alt={step.title} style={{ width: 60, height: 60, objectFit: "contain", marginBottom: 14, mixBlendMode: "screen" }} />
+                    <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 12 }}>{step.title}</h3>
+                    <p style={{ fontSize: 14, color: "#a1a1aa", lineHeight: 1.75 }}>{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 24 }}>
+            {steps.map((_, i) => (
+              <button key={i} onClick={() => setCurrent(i)} style={{
+                width: current === i ? 24 : 8, height: 8, borderRadius: 4,
+                background: current === i ? "#3b82f6" : "#27272a",
+                border: "none", cursor: "pointer",
+                transition: "width 0.3s ease, background 0.3s ease", padding: 0,
+                boxShadow: current === i ? "0 0 12px rgba(59,130,246,0.6)" : "none",
+              }} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <div ref={sectionRef} style={{ height: `${steps.length * 100}vh`, position: "relative" }}>
+      <div style={{
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        overflow: "hidden",
+        padding: "0 24px",
+      }} className="aurora-section">
+        {/* Side ambient glows */}
+        <div style={{ position: "absolute", top: "30%", left: -80, width: 300, height: 300, background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)", filter: "blur(60px)", borderRadius: "50%", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "30%", right: -80, width: 300, height: 300, background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)", filter: "blur(60px)", borderRadius: "50%", pointerEvents: "none" }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", marginBottom: 40 }}>
+          <div style={{ textAlign: "center" }}>
+            <h2 className="section-title" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>Cómo trabajo</h2>
+            <p className="section-subtitle" style={{ marginTop: 12 }}>De la primera llamada a la entrega final.</p>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", marginBottom: 32 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            {steps.map((step, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", flex: 1, gap: 8 }}>
+                <div style={{
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  width: 32, height: 32, borderRadius: "50%",
+                  background: i <= current ? "#3b82f6" : "#1f1f1f",
+                  border: `2px solid ${i <= current ? "#3b82f6" : "#2a2a2a"}`,
+                  color: i <= current ? "#fff" : "#555",
+                  fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  transition: "all 0.4s ease",
+                  boxShadow: i <= current ? "0 0 16px rgba(59,130,246,0.5)" : "none",
+                }}>
+                  {i < current ? (
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+                  ) : step.num}
+                </div>
+                {i < steps.length - 1 && (
+                  <div style={{
+                    flex: 1, height: 2, borderRadius: 1, overflow: "hidden",
+                    background: "#1f1f1f", position: "relative",
+                    boxShadow: i < current ? "0 0 8px rgba(59,130,246,0.5)" : "none",
+                  }}>
+                    {i < current && (
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, #3b82f6, #60a5fa)" }} />
+                    )}
+                    {i === current && (
+                      <div style={{
+                        position: "absolute", inset: 0, height: "100%", width: "40px",
+                        background: "linear-gradient(to right, transparent, #93c5fd, transparent)",
+                        backgroundSize: "100% 300%",
+                        animation: "electricFlow 1.5s linear infinite",
+                      }} />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Cards — fixed formula: offset = (100% + gap) / N */}
+        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", overflow: "hidden" }}>
+          <div style={{
+            display: "flex",
+            gap: 20,
+            transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            transform: `translateX(calc(-${current} * (100% + 20px) / ${steps.length}))`,
+          }}>
+            {steps.map((step, i) => (
+              <div
+                key={i}
+                className={i === current ? "glass-card-blue" : "glass-card"}
+                style={{
+                  flex: `0 0 calc((100% - ${(steps.length - 1) * 20}px) / ${steps.length})`,
+                  minWidth: 0,
+                  padding: "24px 20px",
+                  position: "relative",
+                  transition: "transform 0.4s ease, opacity 0.4s ease",
+                  transform: i === current ? "scale(1)" : "scale(0.97)",
+                  opacity: i === current ? 1 : 0.45,
+                  overflow: "hidden",
+                }}
+              >
+                <span style={{
+                  position: "absolute", top: 10, right: 14,
+                  fontSize: 56, fontWeight: 900,
+                  color: i === current ? "rgba(59,130,246,0.1)" : "rgba(255,255,255,0.025)",
+                  lineHeight: 1, transition: "color 0.4s ease", userSelect: "none",
+                }}>{step.num}</span>
+                <img
+                  src={step.icon3d}
+                  alt={step.title}
+                  style={{
+                    width: 60, height: 60, objectFit: "contain", marginBottom: 12,
+                    mixBlendMode: i === current ? "screen" : "normal",
+                    filter: i === current ? "drop-shadow(0 0 12px rgba(59,130,246,0.5))" : "none",
+                    transition: "filter 0.4s ease",
+                  }}
+                />
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: i === current ? "#fff" : "#555", marginBottom: 10, transition: "color 0.4s ease" }}>{step.title}</h3>
+                <p style={{ fontSize: 13, color: i === current ? "#a1a1aa" : "#333", lineHeight: 1.75, transition: "color 0.4s ease" }}>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ maxWidth: 1200, margin: "18px auto 0", width: "100%", display: "flex", justifyContent: "flex-end" }}>
+          <span style={{ fontSize: 13, color: "#555", letterSpacing: "0.05em" }}>
+            <span style={{ color: "#3b82f6", fontWeight: 700 }}>{String(current + 1).padStart(2, "0")}</span>
+            {" / "}{String(steps.length).padStart(2, "0")}
+          </span>
+        </div>
+
+        {current === 0 && (
+          <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, opacity: 0.5, animation: "bounce 1.5s ease-in-out infinite" }}>
+            <span style={{ fontSize: 11, color: "#555", letterSpacing: "0.08em", textTransform: "uppercase" }}>Scrolleá</span>
+            <svg width="16" height="16" fill="none" stroke="#555" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Precios Section
+   ============================================================ */
+function PreciosSection() {
+  const plans = [
+    {
+      name: "Profesional",
+      price: "$500 – $700",
+      featured: false,
+      badge: null,
+      benefits: [
+        "Landing page estratégica o página institucional",
+        "Diseño moderno y personalizado",
+        "Estructura pensada para comunicar tu propuesta con claridad",
+        "Entrega en 5 a 10 días hábiles",
+        "Formulario de análisis previo al desarrollo",
+        "Revisión y ajustes incluidos",
+      ],
+      audience: "Tenés un negocio o emprendimiento, querés una presencia digital clara y llamativa, y buscás una web que en el futuro se pueda escalar.",
+      btnStyle: "outline",
+    },
+    {
+      name: "Pro",
+      price: "$800 – $1500",
+      featured: true,
+      badge: "Más elegido",
+      benefits: [
+        "Página web completa con múltiples secciones",
+        "Diseño visual premium e impactante",
+        "Análisis del público objetivo en profundidad",
+        "Estrategia de estructura avanzada",
+        "Inicio impactante y único",
+        "Mayor dedicación de tiempo y detalle en cada sección",
+        "Entrega en 7 a 14 días hábiles",
+        "Revisiones incluidas",
+      ],
+      audience: "Ya tenés presencia en redes sociales o una base de contactos, querés mejorar tu conversión o mostrar tu propuesta de manera más clara y profesional.",
+      btnStyle: "primary",
+    },
+    {
+      name: "Plus",
+      price: "$1500+",
+      featured: false,
+      badge: null,
+      benefits: [
+        "Proceso completo y extendido",
+        "Llamadas de seguimiento durante el desarrollo",
+        "Diseño visual de nivel superior, animaciones avanzadas y secciones únicas",
+        "Estrategia y análisis del negocio muy detallados",
+        "Sistemas complejos si los necesitás (catálogos, paneles, automatizaciones)",
+        "Inicio impactante y único, desarrollado con más tiempo y recursos",
+        "Entrega en 15 a 30 días hábiles",
+        "Soporte post-entrega incluido",
+      ],
+      audience: "Ya tenés un volumen importante de tráfico digital, querés escalar tu marca, potenciar tus ventas o reemplazar una web que ya no está dando resultados.",
+      btnStyle: "outline",
+    },
+  ];
+
+  return (
+    <section style={{ padding: "100px 24px", background: "#0a0a0a", position: "relative", overflow: "hidden" }} id="precios">
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        height: 400,
+        background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)",
+        filter: "blur(60px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+      }} />
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ textAlign: "center", marginBottom: 64 }}>
+          <h2 className="section-title animate-on-scroll" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>
+            Elegí tu plan
+          </h2>
+          <p className="section-subtitle animate-on-scroll animate-para delay-1">
+            Cada plan está diseñado para un momento específico de tu negocio.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: 16,
+          alignItems: "start",
+        }}>
+          {plans.map((plan, i) => (
+            <div key={i} className={`animate-on-scroll delay-${i} ${plan.featured ? "price-card-featured" : ""}`}>
+              {plan.badge && (
+                <div style={{ textAlign: "center", marginBottom: 12 }}>
+                  <span style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    background: "rgba(59,130,246,0.1)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(59,130,246,0.4)",
+                    color: "#60a5fa",
+                    fontSize: 12, fontWeight: 600,
+                    padding: "5px 14px", borderRadius: 100,
+                    boxShadow: "0 0 16px rgba(59,130,246,0.3)",
+                  }}>
+                    <span style={{ width: 5, height: 5, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 6px #3b82f6" }} />
+                    {plan.badge}
+                  </span>
+                </div>
+              )}
+
+              <div style={{
+                background: plan.featured ? "rgba(59,130,246,0.08)" : "rgba(255,255,255,0.03)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: plan.featured ? "1px solid rgba(59,130,246,0.3)" : "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16,
+                padding: "22px",
+                position: "relative",
+                overflow: "hidden",
+                boxShadow: plan.featured
+                  ? "0 0 20px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.05)"
+                  : "0 0 20px rgba(59,130,246,0.06), 0 0 40px rgba(59,130,246,0.02), inset 0 1px 0 rgba(255,255,255,0.04)",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent)", zIndex: 1 }} />
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to bottom, rgba(59,130,246,0.06), transparent)", pointerEvents: "none" }} />
+
+                <h3 style={{ fontSize: 19, fontWeight: 700, color: "#fff", marginBottom: 6 }}>{plan.name}</h3>
+                <p className="gradient-text-price" style={{ fontSize: 28, fontWeight: 800, marginBottom: 18, lineHeight: 1 }}>{plan.price}</p>
+
+                <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent)", marginBottom: 18 }} />
+
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 9, marginBottom: 20 }}>
+                  {plan.benefits.map((b, j) => (
+                    <li key={j} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                      <svg width="14" height="14" fill="none" stroke="#3b82f6" strokeWidth="2.5" viewBox="0 0 24 24" style={{ flexShrink: 0, marginTop: 2 }}>
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span style={{ fontSize: 13, color: "#a1a1aa", lineHeight: 1.5 }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href="#contacto"
+                  className={plan.btnStyle === "primary" ? "btn-primary" : "btn-outline"}
+                  style={{ width: "100%", textAlign: "center" }}
+                >
+                  Quiero este plan
+                </a>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", gap: 10, height: 40, padding: "4px 0" }}>
+                {[0, 1, 2].map((j) => (
+                  <div key={j} className="electric-line" style={{ width: 1.5, height: "100%" }} />
+                ))}
+              </div>
+
+              <div style={{
+                background: "rgba(255,255,255,0.03)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 12,
+                padding: "16px 20px",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 20px rgba(59,130,246,0.04), inset 0 1px 0 rgba(255,255,255,0.05)",
+              }}>
+                <p style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+                  Este plan es para vos si:
+                </p>
+                <p style={{ fontSize: 13, color: "#a1a1aa", lineHeight: 1.65 }}>
+                  {plan.audience}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Nueva Precios Section — 2 planes
+   ============================================================ */
+function NuevoPreciosSection() {
+  const plans = [
+    {
+      name: "Plan profesional",
+      price: "USD 400",
+      featured: false,
+      badge: null,
+      benefits: [
+        "Diseño moderno y personalizado",
+        "Estructura para comunicar propuesta",
+        "Hasta 3 páginas",
+        "Revisión y ajustes incluidos",
+        "Entrega en 3 a 7 días hábiles",
+      ],
+      audience: "Tenés un negocio o emprendimiento y querés presencia digital. Buscás una web clara, llamativa y que en el futuro pueda crecer. No tenés web todavía o la que tenés no te representa.",
+    },
+    {
+      name: "Plan Pro",
+      price: "USD 800",
+      featured: true,
+      badge: "Más elegido",
+      benefits: [
+        "Diseño visual premium y diferencial",
+        "Hasta 5 páginas",
+        "Diseño estratégico orientado a conversión",
+        "Estudio de la competencia",
+        "Formulario de análisis previo al desarrollo",
+        "Análisis extenso del negocio y del público",
+        "Estructura orientada a convertir visitas en clientes",
+        "Diseño que transmite la identidad de la marca",
+        "Sistemas complejos si se necesitan",
+        "Entrega en 7 a 12 días hábiles.",
+      ],
+      audience: "Ya tenés presencia en redes o una base de contactos. Querés mejorar tu conversión o mostrar tu propuesta de forma más profesional. Buscás potenciar tus ventas con una web que cierre clientes.",
+    },
+  ];
+
+  return (
+    <section style={{ padding: "100px 24px", background: "#0a0a0a", position: "relative", overflow: "hidden" }} id="precios">
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 500,
+        height: 500,
+        background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)",
+        filter: "blur(60px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+      }} />
+
+      <div style={{ maxWidth: 900, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ textAlign: "center", marginBottom: 64 }}>
+          <h2 className="section-title animate-on-scroll" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>
+            Elegí tu plan
+          </h2>
+          <p className="section-subtitle animate-on-scroll animate-para delay-1">
+            Cada plan está diseñado para un momento específico de tu negocio.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 20,
+          alignItems: "start",
+        }}>
+          {plans.map((plan, i) => (
+            <div key={i} className={`animate-on-scroll delay-${i} ${plan.featured ? "price-card-featured" : ""}`}>
+              {plan.badge && (
+                <div style={{ textAlign: "center", marginBottom: 12 }}>
+                  <span style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    background: "rgba(59,130,246,0.1)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(59,130,246,0.4)",
+                    color: "#60a5fa",
+                    fontSize: 12, fontWeight: 600,
+                    padding: "5px 14px", borderRadius: 100,
+                    boxShadow: "0 0 16px rgba(59,130,246,0.3)",
+                  }}>
+                    <span style={{ width: 5, height: 5, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 6px #3b82f6" }} />
+                    {plan.badge}
+                  </span>
+                </div>
+              )}
+
+              <div style={{
+                background: plan.featured ? "rgba(59,130,246,0.08)" : "rgba(255,255,255,0.03)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: plan.featured ? "1.5px solid rgba(59,130,246,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16,
+                padding: "24px",
+                position: "relative",
+                overflow: "hidden",
+                boxShadow: plan.featured
+                  ? "0 0 32px rgba(59,130,246,0.35), 0 0 80px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.05)"
+                  : "0 0 20px rgba(59,130,246,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+              }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent)", zIndex: 1 }} />
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to bottom, rgba(59,130,246,0.07), transparent)", pointerEvents: "none" }} />
+
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 6 }}>{plan.name}</h3>
+                <p className="gradient-text-price" style={{ fontSize: 32, fontWeight: 800, marginBottom: 18, lineHeight: 1 }}>{plan.price}</p>
+
+                <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent)", marginBottom: 18 }} />
+
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+                  {plan.benefits.map((b, j) => (
+                    <li key={j} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                      <svg width="14" height="14" fill="none" stroke="#3b82f6" strokeWidth="2.5" viewBox="0 0 24 24" style={{ flexShrink: 0, marginTop: 2 }}>
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span style={{ fontSize: 13, color: "#a1a1aa", lineHeight: 1.5 }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to={plan.name === "Plan Pro" ? "/planes/pro" : "/planes/profesional"}
+                  className={plan.featured ? "btn-primary" : "btn-outline"}
+                  style={{
+                    width: "100%",
+                    textAlign: "center",
+                    boxShadow: plan.featured ? "0 0 24px rgba(59,130,246,0.4)" : undefined,
+                  }}
+                >
+                  Ver explicación del plan
+                </Link>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", gap: 10, height: 40, padding: "4px 0" }}>
+                {[0, 1, 2].map((j) => (
+                  <div key={j} className="electric-line" style={{ width: 1.5, height: "100%" }} />
+                ))}
+              </div>
+
+              <div style={{
+                background: "rgba(255,255,255,0.03)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 12,
+                padding: "16px 20px",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 20px rgba(59,130,246,0.04), inset 0 1px 0 rgba(255,255,255,0.05)",
+              }}>
+                <p style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+                  Este plan es para vos si:
+                </p>
+                <p style={{ fontSize: 13, color: "#a1a1aa", lineHeight: 1.65 }}>
+                  {plan.audience}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Contacto Section
+   ============================================================ */
+function ContactoSection() {
+  return (
+    <section id="contacto" style={{
+      padding: "120px 24px",
+      background: "linear-gradient(to bottom, #0a0a0a, #060608)",
+      textAlign: "center",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Big glow behind the card */}
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 600,
+        height: 400,
+        background: "radial-gradient(ellipse, rgba(59,130,246,0.18) 0%, transparent 70%)",
+        filter: "blur(80px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+      }} />
+      {/* Second glow for depth */}
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 300,
+        height: 200,
+        background: "radial-gradient(ellipse, rgba(147,197,253,0.12) 0%, transparent 70%)",
+        filter: "blur(40px)",
+        borderRadius: "50%",
+        pointerEvents: "none",
+      }} />
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 680, margin: "0 auto" }}>
+        {/* Premium card */}
+        <div style={{
+          background: "rgba(255,255,255,0.03)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1px solid rgba(59,130,246,0.25)",
+          borderRadius: 24,
+          padding: "56px 40px",
+          boxShadow: "0 0 60px rgba(59,130,246,0.12), 0 0 120px rgba(59,130,246,0.05), inset 0 1px 0 rgba(255,255,255,0.06)",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          {/* Top shimmer line */}
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.6) 30%, rgba(147,197,253,0.8) 50%, rgba(59,130,246,0.6) 70%, transparent 100%)" }} />
+          {/* Glow behind title */}
+          <div style={{ position: "absolute", top: -40, left: "50%", transform: "translateX(-50%)", width: 300, height: 200, background: "radial-gradient(ellipse, rgba(59,130,246,0.15) 0%, transparent 70%)", filter: "blur(30px)", pointerEvents: "none" }} />
+
+          <div className="animate-on-scroll" style={{ marginBottom: 20, display: "flex", justifyContent: "center" }}>
+            <span className="badge-blue">
+              <span style={{ width: 6, height: 6, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 8px #3b82f6", display: "inline-block" }} />
+              Consultá gratis
+            </span>
+          </div>
+
+          <h2 className="section-title animate-on-scroll" style={{
+            marginBottom: 20,
+            fontSize: "clamp(24px, 4vw, 38px)",
+            textShadow: "0 0 40px rgba(59,130,246,0.3), 0 0 80px rgba(59,130,246,0.15)",
+            position: "relative",
+          }}>
+            ¿Querés saber qué web<br />te conviene?
+          </h2>
+
+          <p className="section-subtitle animate-on-scroll animate-para delay-1" style={{ marginBottom: 36, maxWidth: 480, margin: "0 auto 36px" }}>
+            Hablemos por WhatsApp, veo tu negocio y te digo qué tipo de página tiene más sentido hacer, qué debería incluir y cómo podríamos enfocarla para comunicar mejor tu propuesta.
+          </p>
+
+          <div className="animate-on-scroll delay-2" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <a
+              href="https://wa.link/z137l0"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-primary"
+              style={{
+                fontSize: 17,
+                padding: "16px 36px",
+                borderRadius: 12,
+                boxShadow: "0 0 32px rgba(59,130,246,0.5), 0 0 64px rgba(59,130,246,0.2)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              Hablar por WhatsApp
+            </a>
+            <span style={{ fontSize: 13, color: "#52525b", letterSpacing: "0.03em" }}>
+              Respuesta directa por WhatsApp
+            </span>
+          </div>
+
+          {/* Animated lines at bottom of card */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 10, height: 32, marginTop: 36 }}>
+            {[0, 1, 2, 3, 4].map((j) => (
+              <div key={j} className="electric-line" style={{ width: 1.5, height: "100%" }} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Inicio() {
+  useScrollAnimation();
+
+  return (
+    <>
+      <HeroSection />
+      <DiferencialesSection />
+      <ProcesoSection />
+      {/* Sección de precios anterior — oculta temporalmente para uso futuro */}
+      {/* <PreciosSection /> */}
+      <NuevoPreciosSection />
+      <ContactoSection />
+    </>
+  );
+}
