@@ -6,17 +6,18 @@ import { useScrollAnimation } from "../hooks/useScrollAnimation";
    Carousel — real images with browser frame
    ============================================================ */
 const CAROUSEL_LEFT = [
-  "/portafolio/carrusel/anillo-nova.png",
-  "/portafolio/carrusel/auriculares-lynq.png",
-  "/portafolio/carrusel/gym.png",
+  "/portafolio/carrusel/yeni-inspira.png",
+  "/portafolio/carrusel/starbucks.png",
+  "/portafolio/carrusel/kin-editor.png",
+  "/portafolio/carrusel/gran-malo.png",
   "/portafolio/carrusel/inmobiliaria.png",
 ];
 
 const CAROUSEL_RIGHT = [
-  "/portafolio/carrusel/laptop-nexus.png",
+  "/portafolio/carrusel/grecco-editor.png",
   "/portafolio/carrusel/robot.png",
-  "/portafolio/carrusel/starbucks.png",
-  "/portafolio/carrusel/yate.png",
+  "/portafolio/carrusel/spreen-giga.png",
+  "/portafolio/carrusel/cremoso.png",
 ];
 
 function ImageCard({ src, showDots = false }: { src: string; showDots?: boolean }) {
@@ -208,16 +209,16 @@ function HeroPortafolio() {
    ============================================================ */
 const CATEGORIAS = [
   {
-    label: "Páginas institucionales",
+    label: "Páginas de clientes",
     caption: "Webs para negocios reales",
-    to: "/portafolio/institucionales",
+    to: "/portafolio/clientes",
     cover: "/portafolio/portadas-categorias/institucionales.png",
   },
   {
-    label: "Landing pages",
-    caption: "Páginas enfocadas en convertir",
-    to: "/portafolio/landing-pages",
-    cover: "/portafolio/portadas-categorias/landing-pages.png",
+    label: "Propuestas",
+    caption: "Webs diseñadas para perfiles reales",
+    to: "/portafolio/propuestas",
+    cover: "/portafolio/portadas-categorias/propuestas.png",
   },
   {
     label: "Proyectos propios",
@@ -226,12 +227,18 @@ const CATEGORIAS = [
     cover: "/portafolio/portadas-categorias/proyectos-propios.png",
   },
   {
-    label: "Propuestas",
-    caption: "Webs diseñadas para perfiles reales",
-    to: "/portafolio/propuestas",
-    cover: "/portafolio/portadas-categorias/propuestas.png",
+    label: "Otros",
+    caption: "Exploraciones de diseño",
+    to: "/portafolio/otros",
+    cover: "/portafolio/proyectos-propios/laptop-nexus.png",
   },
 ];
+
+/** Slugs de las categorías anteriores, para que los enlaces viejos no queden rotos. */
+export const CATEGORIAS_ANTERIORES: Record<string, string> = {
+  institucionales: "clientes",
+  "landing-pages": "clientes",
+};
 
 function CategoriaCard({
   categoria,
@@ -459,46 +466,54 @@ interface Project {
 }
 
 const PROJECTS: Record<string, Project[]> = {
-  institucionales: [
+  clientes: [
+    { title: "Yeni Inspira", img: "/portafolio/clientes/yeni-inspira.png", link: "https://www.yeninspira.com/" },
+    { title: "KIN, editor de video", img: "/portafolio/clientes/kin-editor.png", link: "https://kin-editor-landing.vercel.app/" },
+    { title: "Gimnasio Esparta", img: "/portafolio/clientes/gimnasio-esparta.png", link: "https://gimnasio-esparta.vercel.app/" },
     { title: "Inmobiliaria", img: "/portafolio/institucionales/inmobiliaria.png", link: "https://real-estate-design.replit.app/" },
     { title: "Neumáticos", img: "/portafolio/institucionales/neumaticos.png", link: "https://vite-deploy-helper.replit.app/" },
     { title: "Perfumes árabes", img: "/portafolio/institucionales/perfumes-arabes.png", link: "https://perfumes-arabes-kohl.vercel.app/" },
-  ],
-  "landing-pages": [
     { title: "Barbería", img: "/portafolio/landing-pages/barberia.png", link: "https://asset-organizer-sebapepere.replit.app/" },
+  ],
+  "proyectos-propios": [
+    { title: "Fede Vigevani x Cremoso", img: "/portafolio/proyectos-propios/cremoso.png", link: "https://cremoso-web.vercel.app/" },
+    { title: "Jordi x INVICTO", img: "/portafolio/proyectos-propios/invicto.png", link: "https://jordi-segues-landing.vercel.app/" },
+    { title: "Dan Fuentes", img: "/portafolio/proyectos-propios/dan-fuentes.png", link: "https://compound-club-landing.vercel.app/" },
+    { title: "Luisito Comunica x Gran Malo", img: "/portafolio/proyectos-propios/gran-malo.png", link: "https://gran-malo-web.vercel.app/" },
+    { title: "Spreen x GIGA", img: "/portafolio/proyectos-propios/spreen-giga.png", link: "https://giga-landing-mocha.vercel.app/" },
+    { title: "Starbucks", img: "/portafolio/proyectos-propios/starbucks.png", link: "https://starbuks-psi.vercel.app/", desktopOnly: true },
+    { title: "JBL", img: "/portafolio/proyectos-propios/jbl.png", link: "https://vt.tiktok.com/ZSQwRdbAM/", desktopOnly: true },
+  ],
+  otros: [
     { title: "Clínica dental", img: "/portafolio/landing-pages/clinica-dental.png", link: "https://clinic-landing-page-sebapepere.replit.app/" },
     { title: "Clínica dermatológica", img: "/portafolio/landing-pages/clinica-dermatologica.png", link: "https://web-clinica-dermatologica.replit.app/" },
     { title: "Gym", img: "/portafolio/landing-pages/gym.png", link: "https://gym-landing-page.replit.app/#" },
     { title: "Pizza VIP", img: "/portafolio/landing-pages/pizza-vip.png", link: "https://pizza-vip.replit.app/" },
-  ],
-  "proyectos-propios": [
     { title: "Anillo Nova", img: "/portafolio/proyectos-propios/anillo-nova.png", link: null, comingSoon: true },
     { title: "Aurevia club de viajes", img: "/portafolio/proyectos-propios/aurevia-club-de-viajes.png", link: "https://vt.tiktok.com/ZSQwRfQob/" },
     { title: "Auriculares LYNQ", img: "/portafolio/proyectos-propios/auriculares-lynq.png", link: "https://vt.tiktok.com/ZSQwRLqWw/", desktopOnly: true },
-    { title: "JBL", img: "/portafolio/proyectos-propios/jbl.png", link: "https://vt.tiktok.com/ZSQwRdbAM/", desktopOnly: true },
     { title: "Laptop Nexus", img: "/portafolio/proyectos-propios/laptop-nexus.png", link: "https://vt.tiktok.com/ZSQwRjj6Y/", desktopOnly: true },
     { title: "Robot", img: "/portafolio/proyectos-propios/robot.png", link: "https://sebapepere-code.github.io/titan-ai/", desktopOnly: true },
-    { title: "Starbucks", img: "/portafolio/proyectos-propios/starbucks.png", link: "https://starbuks-psi.vercel.app/", desktopOnly: true },
     { title: "Yate de lujo", img: "/portafolio/proyectos-propios/yate.png", link: "https://yate-de-lujo.vercel.app/", desktopOnly: true },
   ],
 };
 
 const CATEGORY_META: Record<string, { title: string; description: string }> = {
-  institucionales: {
-    title: "Páginas institucionales",
-    description: "Webs completas desarrolladas para negocios reales. Con estrategia, diseño personalizado y enfoque en el objetivo del cliente.",
+  clientes: {
+    title: "Páginas de clientes",
+    description: "Webs y landing pages desarrolladas para negocios reales. Con estrategia, diseño personalizado y enfoque en el objetivo del cliente.",
   },
-  "landing-pages": {
-    title: "Landing pages",
-    description: "Páginas de conversión diseñadas para capturar la atención y convertir visitas en contactos o ventas.",
+  propuestas: {
+    title: "Propuestas",
+    description: "Páginas que diseñé para perfiles reales de Instagram, con el objetivo de mostrarles una propuesta personalizada. Entrá a cada una para ver el análisis que hice antes de desarrollarla.",
   },
   "proyectos-propios": {
     title: "Proyectos propios",
     description: "Webs ficticias, rediseños y páginas de marcas conocidas desarrolladas para explorar estilos, técnicas y nuevas ideas.",
   },
-  propuestas: {
-    title: "Propuestas",
-    description: "Páginas que diseñé para perfiles reales de Instagram, con el objetivo de mostrarles una propuesta personalizada. Entrá a cada una para ver el análisis que hice antes de desarrollarla.",
+  otros: {
+    title: "Otros",
+    description: "Otros proyectos y exploraciones de diseño que forman parte de mi recorrido como diseñador web.",
   },
 };
 
@@ -524,6 +539,8 @@ interface Propuesta {
   resumen: string;
   bloques: AnalisisBloque[];
   cierre?: string;
+  /** Sin página de análisis: la tarjeta abre directamente la web. */
+  directa?: boolean;
 }
 
 const PROPUESTAS: Propuesta[] = [
@@ -741,6 +758,18 @@ const PROPUESTAS: Propuesta[] = [
     ],
     cierre: "En conjunto, tanto el contenido como la estructura y el diseño están pensados para que alguien que llegue desde Instagram entienda rápidamente quién es, vea la calidad de su trabajo, tenga motivos para confiar en él y pueda contactarlo con la menor fricción posible.",
   },
+  {
+    slug: "guillermohef",
+    nombre: "Mentor en Crecimiento de Negocios",
+    rubro: "Guillermo Hernández · InfoCapitals",
+    handle: "@guillermohef",
+    instagram: "https://www.instagram.com/guillermohef/",
+    web: "https://guillermohef-landing.vercel.app/",
+    perfilRatio: "16 / 9",
+    resumen: "Una landing con video de presentación y agenda integrada para llevar a cada visita a una llamada 1:1.",
+    bloques: [],
+    directa: true,
+  },
 ];
 
 const propuestaBySlug = (slug: string) => PROPUESTAS.find((p) => p.slug === slug);
@@ -922,25 +951,22 @@ function PropuestaCard({ propuesta, isMobile }: { propuesta: Propuesta; isMobile
   const [hovered, setHovered] = useState(false);
   const active = hovered && !isMobile;
 
-  return (
-    <Link
-      to={`/portafolio/propuestas/${propuesta.slug}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "block",
-        textDecoration: "none",
-        background: "#0d0d0d",
-        border: `1px solid ${active ? "rgba(59,130,246,0.5)" : "rgba(59,130,246,0.15)"}`,
-        borderRadius: 14,
-        overflow: "hidden",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
-        transform: active ? "translateY(-5px)" : "translateY(0)",
-        boxShadow: active
-          ? "0 12px 40px rgba(59,130,246,0.22), 0 0 0 1px rgba(59,130,246,0.14)"
-          : "0 2px 12px rgba(0,0,0,0.4)",
-      }}
-    >
+  const cardStyle: React.CSSProperties = {
+    display: "block",
+    textDecoration: "none",
+    background: "#0d0d0d",
+    border: `1px solid ${active ? "rgba(59,130,246,0.5)" : "rgba(59,130,246,0.15)"}`,
+    borderRadius: 14,
+    overflow: "hidden",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+    transform: active ? "translateY(-5px)" : "translateY(0)",
+    boxShadow: active
+      ? "0 12px 40px rgba(59,130,246,0.22), 0 0 0 1px rgba(59,130,246,0.14)"
+      : "0 2px 12px rgba(0,0,0,0.4)",
+  };
+
+  const contenido = (
+    <>
       <div style={{ position: "relative", overflow: "hidden" }}>
         <img
           src={propuestaPortada(propuesta.slug)}
@@ -999,6 +1025,32 @@ function PropuestaCard({ propuesta, isMobile }: { propuesta: Propuesta; isMobile
         <p style={{ fontSize: 13, color: "#71717a", marginBottom: 10 }}>{propuesta.rubro}</p>
         <p style={{ fontSize: 13.5, color: "#a1a1aa", lineHeight: 1.65 }}>{propuesta.resumen}</p>
       </div>
+    </>
+  );
+
+  if (propuesta.directa) {
+    return (
+      <a
+        href={propuesta.web}
+        target="_blank"
+        rel="noreferrer"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={cardStyle}
+      >
+        {contenido}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      to={`/portafolio/propuestas/${propuesta.slug}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={cardStyle}
+    >
+      {contenido}
     </Link>
   );
 }
@@ -1020,7 +1072,7 @@ export function CategoriaPortafolio({ categoria }: { categoria: string }) {
 
   const meta = CATEGORY_META[categoria];
   const projects = PROJECTS[categoria];
-  const isPropio = categoria === "proyectos-propios";
+  const isPropio = categoria === "proyectos-propios" || categoria === "otros";
   const isPropuestas = categoria === "propuestas";
 
   if (!meta || (!projects && !isPropuestas)) {
@@ -1608,7 +1660,7 @@ function PropuestaIndividual({ propuesta }: { propuesta: Propuesta }) {
 export function ProyectoIndividual({ categoria, proyecto }: { categoria: string; proyecto: string }) {
   const propuesta = categoria === "propuestas" ? propuestaBySlug(proyecto) : undefined;
 
-  if (propuesta) {
+  if (propuesta && !propuesta.directa) {
     return <PropuestaIndividual propuesta={propuesta} />;
   }
 

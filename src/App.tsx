@@ -1,12 +1,13 @@
-import { BrowserRouter, Routes, Route, useParams, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Inicio from "@/pages/Inicio";
 import Sobre from "@/pages/Sobre";
-import Portafolio, { CategoriaPortafolio, ProyectoIndividual } from "@/pages/Portafolio";
-import PlanProfesional from "@/pages/planes/PlanProfesional";
-import PlanPro from "@/pages/planes/PlanPro";
+import Portafolio, { CategoriaPortafolio, ProyectoIndividual, CATEGORIAS_ANTERIORES } from "@/pages/Portafolio";
+// Planes ocultos de la web pública. Para restaurarlos, ver src/pages/planes/README.md
+// import PlanProfesional from "@/pages/planes/PlanProfesional";
+// import PlanPro from "@/pages/planes/PlanPro";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -19,6 +20,8 @@ function ScrollToTop() {
 
 function CategoriaWrapper() {
   const { categoria } = useParams<{ categoria: string }>();
+  const nueva = categoria ? CATEGORIAS_ANTERIORES[categoria] : undefined;
+  if (nueva) return <Navigate to={`/portafolio/${nueva}`} replace />;
   return <CategoriaPortafolio categoria={categoria ?? ""} />;
 }
 
@@ -39,8 +42,9 @@ function AppRoutes() {
           <Route path="/portafolio" element={<Portafolio />} />
           <Route path="/portafolio/:categoria" element={<CategoriaWrapper />} />
           <Route path="/portafolio/:categoria/:proyecto" element={<ProyectoWrapper />} />
-          <Route path="/planes/profesional" element={<PlanProfesional />} />
-          <Route path="/planes/pro" element={<PlanPro />} />
+          {/* Planes ocultos de la web pública. Para restaurarlos, ver src/pages/planes/README.md */}
+          {/* <Route path="/planes/profesional" element={<PlanProfesional />} /> */}
+          {/* <Route path="/planes/pro" element={<PlanPro />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
