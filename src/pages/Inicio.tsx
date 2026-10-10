@@ -631,10 +631,10 @@ function ProcesoSection() {
    Servicios Section — qué puedo hacer (reemplaza a los precios)
    ============================================================ */
 function ServiciosSection() {
-  const [cols, setCols] = useState(3);
+  const [cols, setCols] = useState(4);
 
   useEffect(() => {
-    const check = () => setCols(window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3);
+    const check = () => setCols(window.innerWidth < 768 ? 1 : window.innerWidth < 1150 ? 2 : 4);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -648,7 +648,7 @@ function ServiciosSection() {
     </div>
   );
 
-  const cards = [
+  const cards: { icon: React.ReactNode; title: string; lead?: string; text: string }[] = [
     {
       icon: iconBox(<><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></>),
       title: "Diseño visual personalizado",
@@ -673,6 +673,18 @@ function ServiciosSection() {
       icon: iconBox(<><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></>),
       title: "Sistemas y paneles administrativos",
       text: "Paneles para gestionar productos o servicios y sistemas personalizados según las necesidades del proyecto.",
+    },
+    {
+      icon: iconBox(<><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>),
+      title: "Integraciones y automatizaciones",
+      lead: "Conectá tu web con las herramientas que utiliza tu negocio.",
+      text: "Integración de formularios, servicios externos y funcionalidades que faciliten procesos y mejoren la experiencia de tus clientes.",
+    },
+    {
+      icon: iconBox(<><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>),
+      title: "Desarrollo a medida",
+      lead: "¿Tenés una idea diferente? Podemos hacerla realidad.",
+      text: "Trabajo con HTML, CSS y JavaScript para desarrollar funcionalidades personalizadas que se adapten a las necesidades de tu negocio. Contame tu idea y vemos cómo llevarla a cabo.",
     },
   ];
 
@@ -707,13 +719,18 @@ function ServiciosSection() {
           {cards.map((card, i) => (
             <AnimatedCard
               key={i}
-              className={`animate-on-scroll delay-${i % 3}`}
+              className={`animate-on-scroll delay-${i % 4}`}
               style={{ padding: "36px 28px", flex: `0 0 calc((100% - ${(cols - 1) * gap}px) / ${cols})`, minWidth: 0 }}
             >
               <div style={{ marginBottom: 20 }}>{card.icon}</div>
               <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 12 }}>
                 {card.title}
               </h3>
+              {card.lead && (
+                <p style={{ fontSize: 14, color: "#d4d4d8", fontWeight: 500, lineHeight: 1.6, marginBottom: 8 }}>
+                  {card.lead}
+                </p>
+              )}
               <p style={{ fontSize: 14, color: "#a1a1aa", lineHeight: 1.75 }}>
                 {card.text}
               </p>

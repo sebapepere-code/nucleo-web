@@ -463,6 +463,8 @@ interface Project {
   link: string | null;
   desktopOnly?: boolean;
   comingSoon?: boolean;
+  /** Web en actualización: muestra un aviso en lugar de abrir el enlace. Para restaurarla, borrar esta línea del proyecto. */
+  enActualizacion?: boolean;
 }
 
 const PROJECTS: Record<string, Project[]> = {
@@ -470,17 +472,18 @@ const PROJECTS: Record<string, Project[]> = {
     { title: "Yeni Inspira", img: "/portafolio/clientes/yeni-inspira.png", link: "https://www.yeninspira.com/" },
     { title: "KIN, editor de video", img: "/portafolio/clientes/kin-editor.png", link: "https://kin-editor-landing.vercel.app/" },
     { title: "Gimnasio Esparta", img: "/portafolio/clientes/gimnasio-esparta.png", link: "https://gimnasio-esparta.vercel.app/" },
-    { title: "Inmobiliaria", img: "/portafolio/institucionales/inmobiliaria.png", link: "https://real-estate-design.replit.app/" },
+    { title: "Inmobiliaria", img: "/portafolio/institucionales/inmobiliaria.png", link: "https://real-estate-design.replit.app/", enActualizacion: true },
     { title: "Neumáticos", img: "/portafolio/institucionales/neumaticos.png", link: "https://vite-deploy-helper.replit.app/" },
     { title: "Perfumes árabes", img: "/portafolio/institucionales/perfumes-arabes.png", link: "https://perfumes-arabes-kohl.vercel.app/" },
-    { title: "Barbería", img: "/portafolio/landing-pages/barberia.png", link: "https://asset-organizer-sebapepere.replit.app/" },
+    { title: "Barbería", img: "/portafolio/landing-pages/barberia.png", link: "https://asset-organizer-sebapepere.replit.app/", enActualizacion: true },
   ],
   "proyectos-propios": [
+    { title: "Spreen x GIGA", img: "/portafolio/proyectos-propios/spreen-giga.png", link: "https://giga-landing-mocha.vercel.app/" },
+    { title: "Luisito Comunica x Gran Malo", img: "/portafolio/proyectos-propios/gran-malo.png", link: "https://gran-malo-web.vercel.app/" },
     { title: "Fede Vigevani x Cremoso", img: "/portafolio/proyectos-propios/cremoso.png", link: "https://cremoso-web.vercel.app/" },
     { title: "Jordi x INVICTO", img: "/portafolio/proyectos-propios/invicto.png", link: "https://jordi-segues-landing.vercel.app/" },
     { title: "Dan Fuentes", img: "/portafolio/proyectos-propios/dan-fuentes.png", link: "https://compound-club-landing.vercel.app/" },
-    { title: "Luisito Comunica x Gran Malo", img: "/portafolio/proyectos-propios/gran-malo.png", link: "https://gran-malo-web.vercel.app/" },
-    { title: "Spreen x GIGA", img: "/portafolio/proyectos-propios/spreen-giga.png", link: "https://giga-landing-mocha.vercel.app/" },
+    { title: "Claude", img: "/portafolio/proyectos-propios/claude.png", link: "https://pagina-seguidores-claude-3d.vercel.app/" },
     { title: "Starbucks", img: "/portafolio/proyectos-propios/starbucks.png", link: "https://starbuks-psi.vercel.app/", desktopOnly: true },
     { title: "JBL", img: "/portafolio/proyectos-propios/jbl.png", link: "https://vt.tiktok.com/ZSQwRdbAM/", desktopOnly: true },
   ],
@@ -780,7 +783,17 @@ const propuestaPerfil = (slug: string) => `/portafolio/propuestas/${slug}/perfil
 /* ============================================================
    Desktop Only Modal
    ============================================================ */
-function DesktopOnlyModal({ onClose }: { onClose: () => void }) {
+function AvisoModal({
+  titulo,
+  texto,
+  icono,
+  onClose,
+}: {
+  titulo: string;
+  texto: string;
+  icono: React.ReactNode;
+  onClose: () => void;
+}) {
   return (
     <div
       onClick={onClose}
@@ -818,17 +831,13 @@ function DesktopOnlyModal({ onClose }: { onClose: () => void }) {
           display: "flex", alignItems: "center", justifyContent: "center",
           margin: "0 auto 20px",
         }}>
-          <svg width="22" height="22" fill="none" stroke="#3b82f6" strokeWidth="2" viewBox="0 0 24 24">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-            <line x1="8" y1="21" x2="16" y2="21" />
-            <line x1="12" y1="17" x2="12" y2="21" />
-          </svg>
+          {icono}
         </div>
         <h3 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 12 }}>
-          Solo para computadora
+          {titulo}
         </h3>
         <p style={{ fontSize: 14, color: "#a1a1aa", lineHeight: 1.7, marginBottom: 24 }}>
-          Esta página está hecha solo para computadora. Abrila desde una PC para verla correctamente.
+          {texto}
         </p>
         <button
           onClick={onClose}
@@ -842,6 +851,40 @@ function DesktopOnlyModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function DesktopOnlyModal({ onClose }: { onClose: () => void }) {
+  return (
+    <AvisoModal
+      titulo="Solo para computadora"
+      texto="Esta página está hecha solo para computadora. Abrila desde una PC para verla correctamente."
+      icono={
+        <svg width="22" height="22" fill="none" stroke="#3b82f6" strokeWidth="2" viewBox="0 0 24 24">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+          <line x1="8" y1="21" x2="16" y2="21" />
+          <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+      }
+      onClose={onClose}
+    />
+  );
+}
+
+function ActualizacionModal({ onClose }: { onClose: () => void }) {
+  return (
+    <AvisoModal
+      titulo="Página en actualización"
+      texto="Estamos actualizando esta página para ofrecerte una mejor experiencia. ¡Volvé pronto para conocer el resultado!"
+      icono={
+        <svg width="22" height="22" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+          <polyline points="23 4 23 10 17 10" />
+          <polyline points="1 20 1 14 7 14" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+      }
+      onClose={onClose}
+    />
+  );
+}
+
 /* ============================================================
    Project Card
    ============================================================ */
@@ -850,16 +893,22 @@ function ProjectCard({
   isMobile,
   isPropio,
   onDesktopOnly,
+  onEnActualizacion,
 }: {
   project: Project;
   isMobile: boolean;
   isPropio: boolean;
   onDesktopOnly: () => void;
+  onEnActualizacion: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
   const handleClick = () => {
     if (project.comingSoon || !project.link) return;
+    if (project.enActualizacion) {
+      onEnActualizacion();
+      return;
+    }
     if (
       isPropio &&
       project.desktopOnly &&
@@ -1062,6 +1111,7 @@ export function CategoriaPortafolio({ categoria }: { categoria: string }) {
   useScrollAnimation();
   const [isMobile, setIsMobile] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showActualizacion, setShowActualizacion] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -1086,6 +1136,7 @@ export function CategoriaPortafolio({ categoria }: { categoria: string }) {
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a0a", paddingTop: 68 }}>
       {showModal && <DesktopOnlyModal onClose={() => setShowModal(false)} />}
+      {showActualizacion && <ActualizacionModal onClose={() => setShowActualizacion(false)} />}
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 24px" }}>
         <Link
@@ -1134,6 +1185,7 @@ export function CategoriaPortafolio({ categoria }: { categoria: string }) {
                     isMobile={isMobile}
                     isPropio={isPropio}
                     onDesktopOnly={() => setShowModal(true)}
+                    onEnActualizacion={() => setShowActualizacion(true)}
                   />
                 </div>
               ))}

@@ -260,9 +260,9 @@ function SobreMiSection() {
   }, []);
 
   const stats = [
-    { num: "+20", label: "páginas realizadas" },
-    { num: "+1", label: "año en diseño web" },
-    { num: "+200", label: "h estudiando estrategia web" },
+    { num: "+35", label: "páginas realizadas" },
+    { num: "+1", label: "año y medio en diseño web" },
+    { num: "Quiño", label: "formación avanzada en diseño web" },
   ];
 
   return (
